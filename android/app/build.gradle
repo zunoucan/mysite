@@ -8,39 +8,48 @@ plugins {
 }
 
 android {
-    namespace = "com.tokyohousing"
-    compileSdk = 35
+    namespace "com.tokyohousing"
+    compileSdk 35
 
     defaultConfig {
-        applicationId = "com.tokyohousing"
-        minSdk = 26
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        applicationId "com.tokyohousing"
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName "1.0.0"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
 
     buildFeatures {
-        compose = true
-        buildConfig = true
+        compose true
+        buildConfig true
     }
 
-    flavorDimensions += "tier"
+    flavorDimensions "tier"
     productFlavors {
-        create("free") {
-            dimension = "tier"
-            buildConfigField("boolean", "PREMIUM_ENABLED", "false")
+        free {
+            dimension "tier"
+            buildConfigField "boolean", "PREMIUM_ENABLED", "false"
         }
-        create("premium") {
-            dimension = "tier"
-            buildConfigField("boolean", "PREMIUM_ENABLED", "true")
+        premium {
+            dimension "tier"
+            buildConfigField "boolean", "PREMIUM_ENABLED", "true"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
