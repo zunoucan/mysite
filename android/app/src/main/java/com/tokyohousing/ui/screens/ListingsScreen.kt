@@ -189,53 +189,78 @@ fun ListingCard(listing: HousingListing, onClick: () -> Unit) {
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            // 住所を一番目立つ位置に
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+
+            // ── 住所（メイン表示）────────────────────────
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Default.Home,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(16.dp),
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = listing.address.ifBlank { listing.name },
+                    text = listing.address.ifBlank { "住所：詳細ページ参照" },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
             }
-            // 募集名はサブテキスト
-            if (listing.address.isNotBlank()) {
-                Spacer(Modifier.height(2.dp))
+            // 募集名（サブ）
+            Text(
+                text = listing.name,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+            )
+
+            HorizontalDivider(thickness = 0.5.dp)
+
+            // ── 家賃 ─────────────────────────────────────
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text(
-                    text = listing.name,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listing.layout?.let { InfoChip(label = it) }
-                listing.floorAreaSqm?.let { InfoChip(label = "%.1f㎡".format(it)) }
-                sourceLabel(listing.wardCode)?.let { InfoChip(label = it, secondary = true) }
-            }
-            listing.rentYen?.let { rent ->
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = "家賃 ${"%,d".format(rent)}円/月",
+                    text = listing.rentYen?.let { "家賃　%,d円/月".format(it) } ?: "家賃　要確認",
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = if (listing.rentYen != null) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.SemiBold,
                 )
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    listing.layout?.let { InfoChip(it) }
+                    listing.floorAreaSqm?.let { InfoChip("%.0f㎡".format(it)) }
+                    sourceLabel(listing.wardCode)?.let { InfoChip(it, secondary = true) }
+                }
             }
-            listing.applicationEnd?.let { end ->
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    text = "締切: $end",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                )
+
+            // ── 優遇入居者 ───────────────────────────────
+            val eligibility = listing.eligibilityConditions?.take(40)
+                ?.let { if (listing.eligibilityConditions.length > 40) "$it…" else it }
+            Text(
+                text = "優遇　${eligibility ?: "条件なし・詳細はページ参照"}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            // ── 先着/抽選 + 締切日 ────────────────────────
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val method = listing.buildingType ?: "方式：詳細参照"
+                InfoChip(method, secondary = listing.buildingType == null)
+                listing.applicationEnd?.let { end ->
+                    Text(
+                        text = "締切 $end",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Medium,
+                    )
+                }
             }
         }
     }
