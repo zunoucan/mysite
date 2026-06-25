@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 家のシルエット -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,22 L18,50 L28,50 L28,86 L50,86 L50,66 L58,66 L58,86 L80,86 L80,50 L90,50 Z" />
+</vector>
