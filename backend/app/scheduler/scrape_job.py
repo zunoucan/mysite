@@ -9,6 +9,13 @@ from sqlmodel import Session, select
 from ..db import engine
 from ..models import HousingListing, Ward
 from ..scraper import WARD_SCRAPERS
+from ..scraper.jkk import JKKScraper, JKKOwnScraper, URScraper
+
+EXTRA_SCRAPERS = {
+    "toei": JKKScraper,
+    "jkk":  JKKOwnScraper,
+    "ur":   URScraper,
+}
 from ..config import settings
 
 
@@ -16,8 +23,9 @@ scheduler = AsyncIOScheduler(timezone="Asia/Tokyo")
 
 
 async def scrape_all_wards():
-    print(f"[scraper] 全23区スクレイピング開始: {datetime.now()}")
-    for ward_code, scraper_factory in WARD_SCRAPERS.items():
+    print(f"[scraper] スクレイピング開始: {datetime.now()}")
+    all_scrapers = {**WARD_SCRAPERS, **EXTRA_SCRAPERS}
+    for ward_code, scraper_factory in all_scrapers.items():
         try:
             scraper = scraper_factory()
             listings = await scraper.scrape()

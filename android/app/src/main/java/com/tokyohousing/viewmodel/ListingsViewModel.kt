@@ -19,11 +19,11 @@ data class ListingsUiState(
     val wards: List<Ward> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    // フィルター
     val selectedWardCode: String? = null,
     val minRent: Int? = null,
     val maxRent: Int? = null,
     val selectedLayout: String? = null,
+    val sortBy: String? = null,   // null=新着順, rent_asc, rent_desc, end_date_asc, area_desc
 )
 
 @HiltViewModel
@@ -43,7 +43,7 @@ class ListingsViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = repository.getWards()) {
                 is Result.Success -> _uiState.update { it.copy(wards = result.data) }
-                is Result.Error -> { /* wards はオプショナル */ }
+                is Result.Error -> {}
             }
         }
     }
@@ -57,6 +57,7 @@ class ListingsViewModel @Inject constructor(
                 minRent = state.minRent,
                 maxRent = state.maxRent,
                 layout = state.selectedLayout,
+                sortBy = state.sortBy,
             )) {
                 is Result.Success -> _uiState.update {
                     it.copy(listings = result.data, isLoading = false)
@@ -83,9 +84,25 @@ class ListingsViewModel @Inject constructor(
         loadListings()
     }
 
+    fun setSortBy(sortBy: String?) {
+        _uiState.update { it.copy(sortBy = sortBy) }
+        loadListings()
+    }
+
+    fun applyFilters(layout: String?, minRent: Int?, maxRent: Int?, sortBy: String?) {
+        _uiState.update { it.copy(
+            selectedLayout = layout,
+            minRent = minRent,
+            maxRent = maxRent,
+            sortBy = sortBy,
+        )}
+        loadListings()
+    }
+
     fun clearFilters() {
         _uiState.update { it.copy(
-            selectedWardCode = null, minRent = null, maxRent = null, selectedLayout = null
+            selectedWardCode = null, minRent = null, maxRent = null,
+            selectedLayout = null, sortBy = null,
         )}
         loadListings()
     }

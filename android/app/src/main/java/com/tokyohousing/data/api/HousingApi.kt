@@ -20,12 +20,14 @@ interface HousingApi {
     @GET("api/v1/listings/")
     suspend fun getListings(
         @Query("ward_code") wardCode: String? = null,
+        @Query("source_type") sourceType: String? = null,
         @Query("min_rent") minRent: Int? = null,
         @Query("max_rent") maxRent: Int? = null,
         @Query("layout") layout: String? = null,
         @Query("min_area") minArea: Float? = null,
         @Query("active_only") activeOnly: Boolean = true,
-        @Query("limit") limit: Int = 50,
+        @Query("sort_by") sortBy: String? = null,
+        @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0,
     ): List<HousingListing>
 

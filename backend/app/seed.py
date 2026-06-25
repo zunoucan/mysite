@@ -4,6 +4,7 @@ from .db import engine
 from .models import Ward
 
 WARDS = [
+    # 23区
     ("chiyoda",    "千代田区", "https://www.city.chiyoda.lg.jp"),
     ("chuo",       "中央区",   "https://www.city.chuo.lg.jp"),
     ("minato",     "港区",     "https://www.city.minato.tokyo.jp"),
@@ -27,6 +28,10 @@ WARDS = [
     ("adachi",     "足立区",   "https://www.city.adachi.tokyo.jp"),
     ("katsushika", "葛飾区",   "https://www.city.katsushika.lg.jp"),
     ("edogawa",    "江戸川区", "https://www.city.edogawa.tokyo.jp"),
+    # 広域公営・公社住宅
+    ("toei",  "都営住宅", "https://www.jkk.metro.tokyo.lg.jp"),
+    ("jkk",   "JKK住宅",  "https://www.jkk.metro.tokyo.lg.jp"),
+    ("ur",    "UR賃貸",   "https://www.ur-net.go.jp"),
 ]
 
 

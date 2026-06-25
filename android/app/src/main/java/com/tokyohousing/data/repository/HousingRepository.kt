@@ -24,17 +24,21 @@ class HousingRepository @Inject constructor(
 
     suspend fun getListings(
         wardCode: String? = null,
+        sourceType: String? = null,
         minRent: Int? = null,
         maxRent: Int? = null,
         layout: String? = null,
         minArea: Float? = null,
+        sortBy: String? = null,
     ): Result<List<HousingListing>> = safeCall {
         api.getListings(
             wardCode = wardCode,
+            sourceType = sourceType,
             minRent = minRent,
             maxRent = maxRent,
             layout = layout,
             minArea = minArea,
+            sortBy = sortBy,
         )
     }
 

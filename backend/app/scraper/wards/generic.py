@@ -77,6 +77,10 @@ class GenericWardScraper(BaseScraper):
                 form_link = _resolve_url(url, a["href"])
                 break
 
+        from datetime import date as _date
+        if app_end and app_end < _date.today():
+            return None  # 締切済み物件はスキップ
+
         if not address and not rent:
             return None
 

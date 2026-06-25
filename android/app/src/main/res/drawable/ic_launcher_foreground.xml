@@ -4,8 +4,53 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- 家のシルエット -->
+    <!-- マンション・集合住宅のアイコン（都市型住宅イメージ） -->
+
+    <!-- ビル本体 -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M54,22 L18,50 L28,50 L28,86 L50,86 L50,66 L58,66 L58,86 L80,86 L80,50 L90,50 Z" />
+        android:pathData="M28,82 L28,36 L80,36 L80,82 Z" />
+
+    <!-- 屋上・ペントハウス部分 -->
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M36,36 L36,28 L72,28 L72,36 Z" />
+
+    <!-- 入口 -->
+    <path
+        android:fillColor="#0D47A1"
+        android:pathData="M45,82 L45,66 L63,66 L63,82 Z" />
+
+    <!-- 入口アーチ -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M45,66 Q54,58 63,66 Z" />
+
+    <!-- 窓 1階 -->
+    <path android:fillColor="#90CAF9" android:pathData="M33,70 L42,70 L42,78 L33,78 Z" />
+    <path android:fillColor="#90CAF9" android:pathData="M66,70 L75,70 L75,78 L66,78 Z" />
+
+    <!-- 窓 2階 -->
+    <path android:fillColor="#90CAF9" android:pathData="M33,57 L42,57 L42,64 L33,64 Z" />
+    <path android:fillColor="#90CAF9" android:pathData="M48,57 L60,57 L60,64 L48,64 Z" />
+    <path android:fillColor="#90CAF9" android:pathData="M66,57 L75,57 L75,64 L66,64 Z" />
+
+    <!-- 窓 3階 -->
+    <path android:fillColor="#90CAF9" android:pathData="M33,44 L42,44 L42,51 L33,51 Z" />
+    <path android:fillColor="#90CAF9" android:pathData="M48,44 L60,44 L60,51 L48,51 Z" />
+    <path android:fillColor="#90CAF9" android:pathData="M66,44 L75,44 L75,51 L66,51 Z" />
+
+    <!-- 屋上の窓 -->
+    <path android:fillColor="#BBDEFB" android:pathData="M42,30 L52,30 L52,36 L42,36 Z" />
+    <path android:fillColor="#BBDEFB" android:pathData="M56,30 L66,30 L66,36 L56,36 Z" />
+
+    <!-- 地面ライン -->
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M20,82 L88,82 L88,84 L20,84 Z" />
+
+    <!-- 桜マーク（小さく） -->
+    <path
+        android:fillColor="#F8BBD0"
+        android:pathData="M89,26 Q90,22 91,26 Q95,25 93,28 Q96,31 92,30 Q91,34 89,31 Q87,34 86,30 Q82,31 85,28 Q83,25 87,26 Q88,22 89,26 Z" />
 </vector>

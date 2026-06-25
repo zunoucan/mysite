@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -18,13 +19,13 @@ import com.tokyohousing.viewmodel.ProfileViewModel
 fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     val saved by viewModel.profile.collectAsState()
     var draft by remember(saved) { mutableStateOf(saved) }
-    var saved_snack by remember { mutableStateOf(false) }
+    var showSavedSnack by remember { mutableStateOf(false) }
     val snackState = remember { SnackbarHostState() }
 
-    LaunchedEffect(saved_snack) {
-        if (saved_snack) {
+    LaunchedEffect(showSavedSnack) {
+        if (showSavedSnack) {
             snackState.showSnackbar("プロフィールを保存しました")
-            saved_snack = false
+            showSavedSnack = false
         }
     }
 
@@ -35,7 +36,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
             ExtendedFloatingActionButton(
                 onClick = {
                     viewModel.saveProfile(draft)
-                    saved_snack = true
+                    showSavedSnack = true
                 },
                 text = { Text("保存") },
                 icon = {},
@@ -49,6 +50,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // ── 基本情報 ──────────────────────────────────────
             SectionHeader("基本情報")
             ProfileField("氏名（漢字）", draft.fullName) {
                 draft = draft.copy(fullName = it)
@@ -60,8 +62,9 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                 draft = draft.copy(birthDate = it)
             }
 
+            // ── 性別 ──────────────────────────────────────────
             SectionHeader("性別")
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf("男", "女", "その他").forEach { g ->
                     FilterChip(
                         selected = draft.gender == g,
@@ -71,11 +74,84 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                 }
             }
 
-            SectionHeader("連絡先")
+            // ── 婚姻状況 ──────────────────────────────────────
+            SectionHeader("婚姻状況")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf("未婚", "既婚", "離婚", "死別").forEach { s ->
+                    FilterChip(
+                        selected = draft.maritalStatus == s,
+                        onClick = { draft = draft.copy(maritalStatus = s) },
+                        label = { Text(s) },
+                    )
+                }
+            }
+
+            // ── 家族構成 ──────────────────────────────────────
+            SectionHeader("家族構成")
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("子どもがいる", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                Switch(
+                    checked = draft.hasChildren,
+                    onCheckedChange = { draft = draft.copy(hasChildren = it, childrenCount = if (!it) 0 else draft.childrenCount) },
+                )
+            }
+            if (draft.hasChildren) {
+                ProfileField(
+                    label = "子どもの人数",
+                    value = draft.childrenCount.toString(),
+                    keyboardType = KeyboardType.Number,
+                ) { draft = draft.copy(childrenCount = it.toIntOrNull() ?: 0) }
+            }
+            ProfileField(
+                label = "扶養家族数（配偶者・子含む）",
+                value = draft.dependentsCount.toString(),
+                keyboardType = KeyboardType.Number,
+            ) { draft = draft.copy(dependentsCount = it.toIntOrNull() ?: 0) }
+            ProfileField(
+                label = "世帯人数（本人含む）",
+                value = draft.householdMembers.toString(),
+                keyboardType = KeyboardType.Number,
+            ) { draft = draft.copy(householdMembers = it.toIntOrNull() ?: 1) }
+
+            // ── 居住地 ──────────────────────────────────────
+            SectionHeader("現在の居住地")
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text("東京都在住", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        "多くの公営住宅は都民であることが条件です",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = draft.isTokyoResident,
+                    onCheckedChange = { draft = draft.copy(isTokyoResident = it) },
+                )
+            }
             ProfileField("郵便番号（ハイフンなし）", draft.postalCode, KeyboardType.Number) {
                 draft = draft.copy(postalCode = it)
             }
             ProfileField("住所", draft.address) { draft = draft.copy(address = it) }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("現在賃貸住宅に居住中", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                Switch(
+                    checked = draft.currentlyRenting,
+                    onCheckedChange = { draft = draft.copy(currentlyRenting = it) },
+                )
+            }
+
+            // ── 連絡先 ──────────────────────────────────────
+            SectionHeader("連絡先")
             ProfileField("電話番号", draft.phone, KeyboardType.Phone) {
                 draft = draft.copy(phone = it)
             }
@@ -83,32 +159,30 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                 draft = draft.copy(email = it)
             }
 
-            SectionHeader("世帯・収入")
+            // ── 収入 ──────────────────────────────────────────
+            SectionHeader("収入情報")
             ProfileField(
-                label = "世帯人数",
-                value = draft.householdMembers.toString(),
-                keyboardType = KeyboardType.Number,
-            ) { draft = draft.copy(householdMembers = it.toIntOrNull() ?: 1) }
-            ProfileField(
-                label = "年間収入（円）",
+                label = "年収（円）※所得制限の判定に使用",
                 value = draft.incomeYen.toString(),
                 keyboardType = KeyboardType.Number,
             ) { draft = draft.copy(incomeYen = it.toIntOrNull() ?: 0) }
-
-            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                Text("現在賃貸住宅に居住中")
-                Spacer(Modifier.weight(1f))
-                Switch(
-                    checked = draft.currentlyRenting,
-                    onCheckedChange = { draft = draft.copy(currentlyRenting = it) },
+            if (draft.incomeYen > 0) {
+                Text(
+                    text = "年収 %,d円（月収換算 %,d円）".format(
+                        draft.incomeYen,
+                        draft.incomeYen / 12,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
 
+            // ── 職業 ──────────────────────────────────────────
             SectionHeader("職業")
             ProfileField("職業・職種", draft.occupation) { draft = draft.copy(occupation = it) }
             ProfileField("勤務先名称", draft.workplace) { draft = draft.copy(workplace = it) }
 
-            Spacer(Modifier.height(72.dp)) // FAB の後ろにコンテンツが隠れないよう
+            Spacer(Modifier.height(80.dp))
         }
     }
 }

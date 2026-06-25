@@ -103,7 +103,19 @@ fun DetailScreen(
                             }) {
                                 Icon(Icons.Default.OpenInBrowser, contentDescription = null)
                                 Spacer(Modifier.width(4.dp))
-                                Text("区のページ")
+                                Text("詳細ページ")
+                            }
+                        }
+                        if (listing.address.isNotBlank()) {
+                            OutlinedButton(onClick = {
+                                val query = Uri.encode(listing.address)
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q=$query"))
+                                )
+                            }) {
+                                Icon(Icons.Default.OpenInBrowser, contentDescription = null)
+                                Spacer(Modifier.width(4.dp))
+                                Text("地図で見る")
                             }
                         }
                     }

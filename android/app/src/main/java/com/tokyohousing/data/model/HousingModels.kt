@@ -63,7 +63,7 @@ data class ApplyResponse(
 data class ApplicantProfile(
     @SerialName("full_name") val fullName: String = "",
     @SerialName("full_name_kana") val fullNameKana: String = "",
-    @SerialName("birth_date") val birthDate: String = "",    // YYYY-MM-DD
+    @SerialName("birth_date") val birthDate: String = "",
     val gender: String = "",
     @SerialName("postal_code") val postalCode: String = "",
     val address: String = "",
@@ -74,4 +74,10 @@ data class ApplicantProfile(
     @SerialName("currently_renting") val currentlyRenting: Boolean = false,
     val occupation: String = "",
     val workplace: String = "",
+    // 応募条件判定に必要な追加情報
+    @SerialName("marital_status") val maritalStatus: String = "",  // 未婚/既婚/離婚/死別
+    @SerialName("has_children") val hasChildren: Boolean = false,
+    @SerialName("children_count") val childrenCount: Int = 0,
+    @SerialName("dependents_count") val dependentsCount: Int = 0,
+    @SerialName("is_tokyo_resident") val isTokyoResident: Boolean = true,
 )
