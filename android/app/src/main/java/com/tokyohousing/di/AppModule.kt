@@ -25,7 +25,8 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 object AppModule {
 
     // バックエンドURLは環境変数 or BuildConfig で差し替え可能にする
-    private const val BASE_URL = "https://api.tokyohousing.example.com/"
+    // 10.0.2.2 はエミュレータからlocalhostへのIP
+    private const val BASE_URL = "http://10.0.2.2:8000/"
 
     @Provides @Singleton
     fun provideJson(): Json = Json {
